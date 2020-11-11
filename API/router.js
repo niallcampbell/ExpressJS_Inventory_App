@@ -108,27 +108,32 @@ router.post('/', (req, res) => {
 
 router.put('/:id', (req, res) => {
     
-    var id = parseInt(req.params.id);
+    var updateID = parseInt(req.params.id);
+    var query = {id: updateID};
+    const updateDetails = req.body;
+    var updItem = updateDetails.item;
+    var updPrice = updateDetails.price;
     
-    const found = itemInventory.some(item => item.id === id);
+    var newValues = { $set: {item: updItem, price: updPrice} };
     
-    if(found){
-        
-        const itemUpdateDetails = req.body;
-        
-        itemInventory.forEach(item => {
-           
-            if(item.id === id){
-                item.item = itemUpdateDetails.item ? itemUpdateDetails.item : item.item;
-                item.price = itemUpdateDetails.price ? itemUpdateDetails.price : item.price;
+    MongoClient.connect(url, (err, db) => {
+       if(err) throw err; 
+        var dbObj = db.db("ItemInventory");
+        dbObj.collection("Items").updateOne(query, newValues, (err, result) => {
+            
+            if(err) throw err;
+            
+            if(result != null)
+            {
+                console.log(`Item with ID ${updateID} updated: ` + result.result);
+                res.json(result);
                 
-                res.json({msg: 'Item updated', item});
+            }else{
+                res.status(400).json({msg: `Item with ID ${updateID} not found.`});
             }
+            db.close();
         });
-        
-    }else{
-        res.status(400).json({msg: `Item with ID ${req.params.id} not found.`});
-    }
+    });
     
 });
 
@@ -140,23 +145,26 @@ router.delete('/:id', (req, res) => {
     
     var IDtoDelete = parseInt(req.params.id);
     
-    const found = itemInventory.some(item => item.id === IDtoDelete);
-    
-    if(found){
+    MongoClient.connect(url, (err, db) => {
+        if(err) throw err;
+        var dbObj = db.db("ItemInventory");
+        var query = {id: IDtoDelete};
         
-        itemInventory = itemInventory.filter(item => item.id !== IDtoDelete);
-        
-        res.json(
+        dbObj.collection("Items").deleteOne(query, (err, result) => {
+            if(err) throw err;
+            
+            if(result.result.n !== 0)
             {
-                msg: `Deleted item with ID ${IDtoDelete}`,
-                itemInventory
+                console.log(`Item with ID ${IDtoDelete} deleted.`);
+                res.json(result.result);
+                
+            }else{
+                res.status(400).json({msg: `No item found with ID ${IDtoDelete}`});
             }
-        );
-        
-    }else{
-        res.status(400).json({msg: `No item found with ID ${IDtoDelete}`});
-    }
-    
+            
+            db.close();
+        }); 
+    });    
 });
 
 
