@@ -7,6 +7,9 @@ const express = require('express');
 const uuid = require('uuid');
 var itemInventory = require('../InventoryItems');
 
+const MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://localhost:27017/";
+
 
 // Create Router object and add methods. 
 const router = express.Router();
@@ -14,10 +17,19 @@ const router = express.Router();
 
 /*
     GET all items. 
-    Returns all the items in the inventory in JSON format. 
+    Returns all the items in the Items collection from the ItemInventory DB. 
 */
 router.get('/', (req, res) => {
-    res.json(itemInventory);
+    
+    MongoClient.connect(url, (err, db) => {
+        if(err) throw err;
+        var dbObj = db.db("ItemInventory");
+        dbObj.collection("Items").find({}).toArray((err, result) => {
+            if(err) throw err;
+            res.json(result);
+            db.close();
+        });
+    });
 });
 
 
@@ -26,19 +38,39 @@ router.get('/', (req, res) => {
 */
 router.get('/:id', (req, res) => {
     
-    const found = itemInventory.some( item => item.id === parseInt(req.params.id));
+    //const found = itemInventory.some( item => item.id === parseInt(req.params.id));
+    var searchID = parseInt(req.params.id);
     
-    if(found) {
-        res.json(itemInventory.filter( item => item.id === parseInt(req.params.id)));
-    }else{
-        res.status(400).json({msg: `No member with id of ${req.params.id} found.`});
-    }
-    
+    MongoClient.connect(url, (err, db) => {
+        if(err) throw err;
+        var dbObj = db.db("ItemInventory");
+        var query = { id: searchID };
+        dbObj.collection("Items").findOne(query, (err, result) => {
+            if(err) throw err;
+            
+            if(result != null)
+            {
+                var dbItem = {
+                    id: result.id,
+                    item: result.item,
+                    price: result.price
+                };
+            
+                res.json(dbItem);
+            
+                console.log("Item: " + dbItem);
+            }else{
+                res.status(400).json({msg: `No member with id of ${searchID} found.`});
+            }
+            
+            db.close();
+        });
+    });
 });
 
 
 /*
-    POST a new item into the inventory, i.e. create new item. 
+    POST a new item into the ItemInventory Database, i.e. create new item. 
 */
 router.post('/', (req, res) => {
     
@@ -52,7 +84,18 @@ router.post('/', (req, res) => {
        return res.status(400).json({msg: 'Please supply a valid name and price'});
     }
     
-    itemInventory.push(newItem);
+    // Send the new item to the database
+    MongoClient.connect(url, (err, db) => {
+        if(err) throw err;
+        var dbObj = db.db("ItemInventory");
+    
+        dbObj.collection("Items").insertOne(newItem, (err, res) => {
+            if(err) throw err;
+            db.close();
+        });
+    });
+    
+    //res.json(newItem);
     
     res.redirect('/');
     
