@@ -20,7 +20,7 @@
 
 <br/>
 
-<h4>Items</h4>
+<h3>Items</h3>
 
 <table class="table table-hover">
     
@@ -29,16 +29,20 @@
             <th scope="col">ID</th>
             <th scope="col">Item Name</th>
             <th scope="col">Price</th>
+            <th scope="col">Options</th>
         </tr>
     </thead>
     <tbody>
         {{#each itemInv}}
             <tr>
-                <td scope="row">{{this.id}}</td>
+                <td scope="row" class="rowItemID">{{this.id}}</td>
                 <td>{{this.item}}</td>
                 <td>{{this.price}}</td>
+                <td><input type="button" value="Delete" onclick="deleteItemFromInventory()"></td>
             </tr>
         {{/each}}
     </tbody>
     
 </table>
+
+<br/>

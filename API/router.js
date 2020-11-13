@@ -143,7 +143,9 @@ router.put('/:id', (req, res) => {
 */
 router.delete('/:id', (req, res) => {
     
-    var IDtoDelete = parseInt(req.params.id);
+    var IDtoDelete = req.params.id;
+    
+    console.log("ID to delete: " + IDtoDelete);
     
     MongoClient.connect(url, (err, db) => {
         if(err) throw err;
@@ -156,7 +158,8 @@ router.delete('/:id', (req, res) => {
             if(result.result.n !== 0)
             {
                 console.log(`Item with ID ${IDtoDelete} deleted.`);
-                res.json(result.result);
+                console.log("result: " + result.result.n);
+                res.json(result.result.n);
                 
             }else{
                 res.status(400).json({msg: `No item found with ID ${IDtoDelete}`});

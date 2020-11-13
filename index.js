@@ -3,6 +3,7 @@ const logger = require('./middleware/logger');
 const handlebars = require('express-handlebars');
 var inventoryItems = require('./InventoryItems');
 const MongoClient = require('mongodb').MongoClient;
+const path = require('path');
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(logger);
 
+app.use(express.static(path.join(__dirname, 'public')));
 
 /*
     Set up handlebars for html templates and dynamic generation. 
