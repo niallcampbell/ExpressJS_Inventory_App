@@ -48,6 +48,44 @@ app.get('/', (req, res) => {
     });
 });
 
+// Render page for editing item info
+app.get('/item/:id', (req, res) => {
+    
+    var searchID = req.params.id;
+    
+    var dbItem;
+    
+    MongoClient.connect(url, (err, db) => {
+        
+        if(err) throw err;
+        var dbObj = db.db("ItemInventory");
+        var query = {id: searchID};
+        
+        console.log(`Load edit item page of ${searchID}`);
+        
+        dbObj.collection("Items").findOne(query, (err, result) => {
+            if(err) throw err;
+            
+            if(result != null)
+            {
+                dbItem = {
+                    id: result.id,
+                    item: result.item,
+                    price: result.price
+                };
+                
+                console.log(`Item found: ${dbItem}`);
+                
+                res.render('editItem', {title: "Edit Item", dbItem});
+                console.log("Page rendered");
+                db.close();
+            }
+        });
+        
+    });
+    
+});
+
 
 /*
     Use API requests router

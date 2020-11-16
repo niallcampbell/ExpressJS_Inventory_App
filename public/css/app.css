@@ -1,0 +1,9 @@
+.centerButton {
+    margin: 0 auto;
+    display: block;
+}
+
+.centerCard {
+    width: 21.5em;
+    margin:0 auto;
+}

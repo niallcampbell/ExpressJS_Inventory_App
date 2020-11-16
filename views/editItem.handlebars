@@ -1,0 +1,32 @@
+<h1 class="text-center mb-3">{{title}}</h1>
+
+<div class="card bg-light mb-3 centerCard">
+    <div class="card-header"><h5>Details</h5></div>
+    <div class="card-body">
+        <p class="card-text">Name: {{dbItem.item}}</p>
+        <p class="card-text">ID: {{dbItem.id}}</p>
+        <p class="card-text">Price: {{dbItem.price}}</p>
+        
+    </div>
+</div>
+
+<br/>
+<h4>Update Item Details</h4>
+
+<form action="/api/items/{{dbItem.id}}" method="PUT" class="mb-4">
+    
+    <div class="form-group">
+        <label for="item">Name</label>
+        <input type="text" name="item" class="form-control" id="updateItemName" placeholder="Enter new item name">
+    </div>
+    
+    <div class="form-group">
+        <label for="price">Price</label>
+        <input type="text" name="price" class="form-control" id="updateItemPrice" placeholder="Enter new item price">
+    </div>
+    
+    <input type="button" value="Update Item" class="btn btn-primary btn block" onclick="updateItem('{{dbItem.id}}')">
+    
+</form>
+
+<a href="/"><button type="button" class="btn btn-outline-primary centerButton">Return</button></a>

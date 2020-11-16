@@ -38,7 +38,6 @@ router.get('/', (req, res) => {
 */
 router.get('/:id', (req, res) => {
     
-    //const found = itemInventory.some( item => item.id === parseInt(req.params.id));
     var searchID = parseInt(req.params.id);
     
     MongoClient.connect(url, (err, db) => {
@@ -108,7 +107,7 @@ router.post('/', (req, res) => {
 
 router.put('/:id', (req, res) => {
     
-    var updateID = parseInt(req.params.id);
+    var updateID = req.params.id;
     var query = {id: updateID};
     const updateDetails = req.body;
     var updItem = updateDetails.item;

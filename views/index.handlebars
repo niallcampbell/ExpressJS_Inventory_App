@@ -38,11 +38,15 @@
                 <td scope="row" class="rowItemID">{{this.id}}</td>
                 <td>{{this.item}}</td>
                 <td>{{this.price}}</td>
-                <td><input type="button" value="Delete" onclick="deleteItemFromInventory()"></td>
+                <td><a href="/item/{{this.id}}"><button type="button" class="btn btn-outline-primary">Edit</button></a> <input type="button" value="Delete" class="btn btn-outline-danger" onclick="deleteItemFromInventory()"></td>
             </tr>
         {{/each}}
     </tbody>
     
 </table>
+
+<div id="editPage"></div>
+
+<!-- <input type="button" value="Edit" onclick="loadEditItemPage()"> -->
 
 <br/>

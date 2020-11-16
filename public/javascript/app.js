@@ -23,3 +23,34 @@ function deleteItemFromInventory()
     location.reload(true);
     
 }
+
+
+function updateItem(itemID)
+{   
+    var item = $("#updateItemName").val();
+    var price = $("#updateItemPrice").val();
+    
+    var updateItemDetails = {
+        item: item,
+        price: price
+    };
+    
+    var xhttp = new XMLHttpRequest();
+    
+    xhttp.onreadystatechange = function() {
+        
+        if(this.readyState == 4 && this.status == 200)
+        {
+            var res = xhttp.responseText;
+            alert(`Item with ID ${itemID} updated`);
+        }
+        
+    };
+    
+    xhttp.open("PUT", `http://localhost:5000/api/items/${itemID}`, true);
+    xhttp.setRequestHeader("Content-Type", "application/json");
+    xhttp.send(JSON.stringify(updateItemDetails));
+    
+    location.reload(true);
+    
+}
