@@ -38,7 +38,7 @@ router.get('/', (req, res) => {
 */
 router.get('/:id', (req, res) => {
     
-    var searchID = parseInt(req.params.id);
+    var searchID = req.params.id;
     
     MongoClient.connect(url, (err, db) => {
         if(err) throw err;
